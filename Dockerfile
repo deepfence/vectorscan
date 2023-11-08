@@ -18,6 +18,33 @@ RUN mkdir -p /build && cd build && curl -O https://www.colm.net/files/colm/colm-
     curl -O https://www.colm.net/files/ragel/ragel-${RAGEL_VERSION}.tar.gz && \
     tar -zxvf ragel-${RAGEL_VERSION}.tar.gz && \
     cd /build/ragel-${RAGEL_VERSION} && \
-    ./configure --prefix=/opt/colm/ragel --with-colm=/opt/colm/colm --disable-manual && make -j$(nproc) && make install
+    ./configure --prefix=/opt/colm/ragel --with-colm=/opt/colm/colm --disable-manual && make -j$(nproc) && make install && \
+    rm -rf /build
 
 ENV PATH="/opt/colm/ragel/bin/:$PATH"
+
+COPY . /src/
+
+RUN bash <<EOF
+set -eux
+
+(
+    cd /src
+    mkdir -p build
+    cd build
+    cmake ..
+    make -j$(nproc)
+    make install
+)
+rm -rf /src
+
+tar -cjf /vectorscan.tar.bz2 \
+    /usr/local/lib/pkgconfig/libhs.pc \
+    /usr/local/include/hs/hs.h \
+    /usr/local/include/hs/hs_common.h \
+    /usr/local/include/hs/hs_compile.h \
+    /usr/local/include/hs/hs_runtime.h \
+    /usr/local/lib/libhs_runtime.a \
+    /usr/local/lib/libhs.a
+
+EOF
