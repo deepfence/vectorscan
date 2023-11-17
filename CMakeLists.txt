@@ -167,12 +167,12 @@ if (CMAKE_COMPILER_IS_GNUCC AND NOT CROSS_COMPILE)
     # the flag), so use that for tune.
 
     set(TUNE_FLAG "mtune")
-    set(GNUCC_TUNE "")
+    set(GNUCC_TUNE "generic")
     message(STATUS "ARCH_FLAG '${ARCH_FLAG}' '${GNUCC_ARCH}', TUNE_FLAG '${TUNE_FLAG}' '${GNUCC_TUNE}' ")
 
     # arg1 might exist if using ccache
     string (STRIP "${CMAKE_C_COMPILER_ARG1}" CC_ARG1)
-    set (EXEC_ARGS ${CC_ARG1} -c -Q --help=target -${ARCH_FLAG}=native -${TUNE_FLAG}=native)
+    set (EXEC_ARGS ${CC_ARG1} -c -Q --help=target -${ARCH_FLAG}=core-avx2 -${TUNE_FLAG}=generic)
     execute_process(COMMAND ${CMAKE_C_COMPILER} ${EXEC_ARGS}
         OUTPUT_VARIABLE _GCC_OUTPUT)
     set(_GCC_OUTPUT_TUNE ${_GCC_OUTPUT})
@@ -208,8 +208,8 @@ if (CMAKE_COMPILER_IS_GNUCC AND NOT CROSS_COMPILE)
         INPUT_FILE /dev/null
         RESULT_VARIABLE GNUCC_TUNE_TEST)
     if (NOT GNUCC_TUNE_TEST EQUAL 0)
-        message(WARNING "Something went wrong determining gcc tune: -mtune=${GNUCC_TUNE} not valid, falling back to -mtune=native")
-        set(GNUCC_TUNE native)
+        message(WARNING "Something went wrong determining gcc tune: -mtune=${GNUCC_TUNE} not valid, falling back to -mtune=generic")
+        set(GNUCC_TUNE generic)
     else()
         set(GNUCC_TUNE ${GNUCC_TUNE})
         message(STATUS "gcc will tune for ${GNUCC_ARCH}, ${GNUCC_TUNE}")
