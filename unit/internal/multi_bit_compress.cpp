@@ -37,6 +37,8 @@
 #include "util/multibit_build.h"
 #include "util/multibit_compress.h"
 
+#include <memory>
+
 using namespace std;
 using namespace testing;
 using namespace ue2;

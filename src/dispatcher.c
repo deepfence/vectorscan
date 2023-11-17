@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020, Intel Corporation
+ * Copyright (c) 2016-2023, Intel Corporation
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -80,7 +80,7 @@
                                                                                \
     /* function */                                                             \
     HS_PUBLIC_API                                                              \
-    RTYPE NAME(__VA_ARGS__) __attribute__((ifunc("resolve_" #NAME)))
+    RTYPE NAME(__VA_ARGS__) __attribute__(("resolve_" #NAME))
 
 #elif defined(ARCH_AARCH64)
 #include "util/arch/arm/cpuid_inline.h"
@@ -114,7 +114,7 @@
                                                                                \
     /* function */                                                             \
     HS_PUBLIC_API                                                              \
-    RTYPE NAME(__VA_ARGS__) __attribute__((ifunc("resolve_" #NAME)))
+    RTYPE NAME(__VA_ARGS__) __attribute__(("resolve_" #NAME))
 
 #endif
 CREATE_DISPATCH(hs_error_t, hs_scan, const hs_database_t *db, const char *data,

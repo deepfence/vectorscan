@@ -11,13 +11,13 @@ shift 2
 # $@ contains the actual build command
 OUT=$(echo "$@" | rev | cut -d ' ' -f 2- | rev | sed 's/.* -o \(.*\.o\).*/\1/')
 trap cleanup INT QUIT EXIT
-SYMSFILE=$(mktemp -p /tmp ${PREFIX}_rename.syms.XXXXX)
-KEEPSYMS=$(mktemp -p /tmp keep.syms.XXXXX)
+SYMSFILE=$(mktemp -p /tmp -t ${PREFIX}_rename.syms.XXXXXX)
+KEEPSYMS=$(mktemp -p /tmp -t keep.syms.XXXXXX)
 # find the libc used by gcc
-LIBC_SO=$("$@" --print-file-name=libc.so.6)
+LIBC_SO=$("$@" --print-file-name=libc.so)
 cp ${KEEPSYMS_IN} ${KEEPSYMS}
 # get all symbols from libc and turn them into patterns
-nm -f p -g -D ${LIBC_SO} | sed -s 's/\([^ @]*\).*/^\1$/' >> ${KEEPSYMS}
+nm -f p -g -D ${LIBC_SO} | sed 's/\([^ @]*\).*/^\1$/' >> ${KEEPSYMS}
 # build the object
 "$@"
 # rename the symbols in the object

@@ -161,8 +161,8 @@ endif()
 if (CMAKE_COMPILER_IS_GNUCC AND NOT CROSS_COMPILE)
     message(STATUS "gcc version ${CMAKE_C_COMPILER_VERSION}")
 
-    # If gcc doesn't recognise the host cpu, then mtune=native becomes
-    # generic, which isn't very good in some cases. march=native looks at
+    # If gcc doesn't recognise the host cpu, then mtune=generic becomes
+    # generic, which isn't very good in some cases. march=generic looks at
     # cpuid info and then chooses the best microarch it can (and replaces
     # the flag), so use that for tune.
 
@@ -172,7 +172,7 @@ if (CMAKE_COMPILER_IS_GNUCC AND NOT CROSS_COMPILE)
 
     # arg1 might exist if using ccache
     string (STRIP "${CMAKE_C_COMPILER_ARG1}" CC_ARG1)
-    set (EXEC_ARGS ${CC_ARG1} -c -Q --help=target -${ARCH_FLAG}=native -${TUNE_FLAG}=native)
+    set (EXEC_ARGS ${CC_ARG1} -c -Q --help=target -${ARCH_FLAG}=generic -${TUNE_FLAG}=generic)
     execute_process(COMMAND ${CMAKE_C_COMPILER} ${EXEC_ARGS}
         OUTPUT_VARIABLE _GCC_OUTPUT)
     set(_GCC_OUTPUT_TUNE ${_GCC_OUTPUT})
@@ -208,15 +208,15 @@ if (CMAKE_COMPILER_IS_GNUCC AND NOT CROSS_COMPILE)
         INPUT_FILE /dev/null
         RESULT_VARIABLE GNUCC_TUNE_TEST)
     if (NOT GNUCC_TUNE_TEST EQUAL 0)
-        message(WARNING "Something went wrong determining gcc tune: -mtune=${GNUCC_TUNE} not valid, falling back to -mtune=native")
-        set(GNUCC_TUNE native)
+        message(WARNING "Something went wrong determining gcc tune: -mtune=${GNUCC_TUNE} not valid, falling back to -mtune=generic")
+        set(GNUCC_TUNE generic)
     else()
         set(GNUCC_TUNE ${GNUCC_TUNE})
         message(STATUS "gcc will tune for ${GNUCC_ARCH}, ${GNUCC_TUNE}")
     endif()
 elseif (CMAKE_COMPILER_IS_CLANG AND NOT CROSS_COMPILE)
     if (ARCH_IA32 OR ARCH_X86_64)
-        set(GNUCC_ARCH native)
+        set(GNUCC_ARCH generic)
         set(TUNE_FLAG generic)
     elseif(ARCH_AARCH64)
        set(GNUCC_ARCH armv8)
@@ -225,7 +225,7 @@ elseif (CMAKE_COMPILER_IS_CLANG AND NOT CROSS_COMPILE)
        set(GNUCC_ARCH armv7a)
        set(TUNE_FLAG generic)
     else()
-       set(GNUCC_ARCH native)
+       set(GNUCC_ARCH generic)
        set(TUNE_FLAG generic)
     endif()
     message(STATUS "clang will tune for ${GNUCC_ARCH}, ${TUNE_FLAG}")

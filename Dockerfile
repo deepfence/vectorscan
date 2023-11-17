@@ -32,8 +32,8 @@ set -eux
     cd /src
     mkdir -p build
     cd build
-    cmake -DCMAKE_C_FLAGS="-mtune=generic" -DCMAKE_CXX_FLAGS="-mtune=generic" ..
-    make -j$(nproc)
+    cmake -DFAT_RUNTIME=1 -DCMAKE_SYSTEM_NAME=Linux -DCMAKE_HOST_SYSTEM_NAME=Linux -DBUILD_STATIC_LIBS=1 -DBUILD_SHARED_LIBS=0 ..
+    make
     make install
 )
 rm -rf /src
