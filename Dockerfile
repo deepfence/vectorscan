@@ -32,8 +32,8 @@ set -eux
     cd /src
     mkdir -p build
     cd build
-    cmake -DCMAKE_C_FLAGS="-mtune=generic" -DCMAKE_CXX_FLAGS="-mtune=generic" ..
-    make -j$(nproc)
+    cmake ..
+    make -j($nproc) hs
     make install
 )
 rm -rf /src
