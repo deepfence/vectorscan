@@ -172,7 +172,13 @@ if (CMAKE_COMPILER_IS_GNUCC AND NOT CROSS_COMPILE)
 
     # arg1 might exist if using ccache
     string (STRIP "${CMAKE_C_COMPILER_ARG1}" CC_ARG1)
-    set (EXEC_ARGS ${CC_ARG1} -c -Q --help=target -${ARCH_FLAG}=core-avx2 -${TUNE_FLAG}=generic)
+
+    set(ARCH_FLAG_VAL "core-avx2")
+    if (CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64")
+        set(ARCH_FLAG_VAL "armv8.2-a")
+    endif()
+
+    set (EXEC_ARGS ${CC_ARG1} -c -Q --help=target -${ARCH_FLAG}=${ARCH_FLAG_VAL} -${TUNE_FLAG}=generic)
     execute_process(COMMAND ${CMAKE_C_COMPILER} ${EXEC_ARGS}
         OUTPUT_VARIABLE _GCC_OUTPUT)
     set(_GCC_OUTPUT_TUNE ${_GCC_OUTPUT})
